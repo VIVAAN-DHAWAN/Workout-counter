@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daily Workout Counter</title>
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --accent: #22c55e;
+      --accent2: #3b82f6;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 420px;
+      padding: 16px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    header .date {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .count {
+      margin-bottom: 10px;
+      color: var(--muted);
+    }
+
+    .progress {
+      background: #1f2933;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .bar.pullups {
+      background: var(--accent);
+    }
+
+    .bar.pushups {
+      background: var(--accent2);
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      padding: 14px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+      background: #1f2937;
+      color: var(--text);
+    }
+
+    button:disabled {
+      opacity: 0.4;
+    }
+
+    footer {
+      margin-top: 10px;
+    }
+
+    .reset {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: var(--danger);
+      color: white;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app">
+    <header>
+      <h1>Daily Workout</h1>
+      <div class="date" id="todayDate"></div>
+    </header>
+
+    <div class="card">
+      <div class="title">Pull-ups</div>
+      <div class="count" id="pullupsText">0 / 100</div>
+      <div class="progress">
+        <div class="bar pullups" id="pullupsBar"></div>
+      </div>
+      <div class="buttons">
+        <button onclick="addPullups(1)">+1</button>
+        <button onclick="addPullups(5)">+5</button>
+        <button onclick="addPullups(10)">+10</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="title">Push-ups</div>
+      <div class="count" id="pushupsText">0 / 200</div>
+      <div class="progress">
+        <div class="bar pushups" id="pushupsBar"></div>
+      </div>
+      <div class="buttons">
+        <button onclick="addPushups(1)">+1</button>
+        <button onclick="addPushups(5)">+5</button>
+        <button onclick="addPushups(10)">+10</button>
+      </div>
+    </div>
+
+    <footer>
+      <button class="reset" onclick="resetToday()">Reset Today</button>
+    </footer>
+  </div>
+
+<script>
+  const STORAGE_KEY = "workoutProgress";
+  const PULLUPS_GOAL = 100;
+  const PUSHUPS_GOAL = 200;
+
+  let data;
+
+  function getToday() {
+    return new Date().toISOString().split("T")[0];
+  }
+
+  function loadData() {
+    const today = getToday();
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+    if (!saved || saved.date !== today) {
+      data = { date: today, pullups: 0, pushups: 0 };
+      saveData();
+    } else {
+      data = saved;
+    }
+  }
+
+  function saveData() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function render() {
+    document.getElementById("todayDate").textContent = data.date;
+
+    document.getElementById("pullupsText").textContent =
+      `${data.pullups} / ${PULLUPS_GOAL}`;
+    document.getElementById("pushupsText").textContent =
+      `${data.pushups} / ${PUSHUPS_GOAL}`;
+
+    document.getElementById("pullupsBar").style.width =
+      Math.min((data.pullups / PULLUPS_GOAL) * 100, 100) + "%";
+    document.getElementById("pushupsBar").style.width =
+      Math.min((data.pushups / PUSHUPS_GOAL) * 100, 100) + "%";
+
+    toggleButtons();
+  }
+
+  function toggleButtons() {
+    document.querySelectorAll(".card")[0]
+      .querySelectorAll("button")
+      .forEach(b => b.disabled = data.pullups >= PULLUPS_GOAL);
+
+    document.querySelectorAll(".card")[1]
+      .querySelectorAll("button")
+      .forEach(b => b.disabled = data.pushups >= PUSHUPS_GOAL);
+  }
+
+  function addPullups(n) {
+    data.pullups = Math.min(data.pullups + n, PULLUPS_GOAL);
+    saveData();
+    render();
+  }
+
+  function addPushups(n) {
+    data.pushups = Math.min(data.pushups + n, PUSHUPS_GOAL);
+    saveData();
+    render();
+  }
+
+  function resetToday() {
+    data.pullups = 0;
+    data.pushups = 0;
+    saveData();
+    render();
+  }
+
+  loadData();
+  render();
+</script>
+
+</body>
+</html>
