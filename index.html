@@ -1,65 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daily Workout Counter</title>
-
-  <!-- Optional CSS file -->
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-
-  <div class="app">
-
-    <!-- HEADER -->
-    <header>
-      <h1>Daily Workout</h1>
-      <div id="todayDate" class="date"></div>
-    </header>
-
-    <!-- PULL-UPS SECTION -->
-    <section class="card">
-      <h2>Pull-ups</h2>
-
-      <div id="pullupsText" class="count">0 / 100</div>
-
-      <div class="progress">
-        <div id="pullupsBar" class="bar"></div>
-      </div>
-
-      <div class="buttons">
-        <button class="pullup-btn" onclick="addPullups(1)">+1</button>
-        <button class="pullup-btn" onclick="addPullups(5)">+5</button>
-        <button class="pullup-btn" onclick="addPullups(10)">+10</button>
-      </div>
-    </section>
-
-    <!-- PUSH-UPS SECTION -->
-    <section class="card">
-      <h2>Push-ups</h2>
-
-      <div id="pushupsText" class="count">0 / 200</div>
-
-      <div class="progress">
-        <div id="pushupsBar" class="bar"></div>
-      </div>
-
-      <div class="buttons">
-        <button class="pushup-btn" onclick="addPushups(1)">+1</button>
-        <button class="pushup-btn" onclick="addPushups(5)">+5</button>
-        <button class="pushup-btn" onclick="addPushups(10)">+10</button>
-      </div>
-    </section>
-
-    <!-- RESET -->
-    <footer>
-      <button class="reset" onclick="resetToday()">Reset Today</button>
-    </footer>
-
-  </div>
-
-  <!-- JS FILE -->
-  <script src="script.js"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aurora Counter</title>
+  </head>
+  <body>
+    <div id="root"></div>
+  </body>
 </html>
